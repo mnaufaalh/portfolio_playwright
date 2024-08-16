@@ -1,0 +1,22 @@
+{
+  "name": "portfolio_playwright",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mnaufaalh/portfolio_playwright.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mnaufaalh/portfolio_playwright/issues"
+  },
+  "homepage": "https://github.com/mnaufaalh/portfolio_playwright#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.46.0",
+    "@types/node": "^22.3.0"
+  }
+}
