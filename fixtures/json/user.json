@@ -1,0 +1,34 @@
+{
+  "legitChecker": {
+    "emailAddress": "legitCheckTesting.kickavenue@gmail.com",
+    "password": "testingqa1"
+  },
+  "qualityChecker": {
+    "emailAddress": "qualityCheckTesting.kickavenue@gmail.com",
+    "password": "testingqa1"
+  },
+  "automationUserSeller": {
+    "emailAddress": "automationUserSeller@gmail.com",
+    "password": "Buatest1"
+  },
+  "automationUserBuyerMidtrans": {
+    "emailAddress": "automationUserBuyerMidtrans@gmail.com",
+    "password": "Buatest1"
+  },
+  "automationUserBuyerKickCredit": {
+    "emailAddress": "automationUserBuyerKickCredit@gmail.com",
+    "password": "Buatest1"
+  },
+  "automationUserBuyerKickPoint": {
+    "emailAddress": "automationUserBuyerKickPoint@gmail.com",
+    "password": "Buatest1"
+  },
+  "automationUserBuyerSellerCredit": {
+    "emailAddress": "automationUserBuyerSellerCredit@gmail.com",
+    "password": "Buatest1"
+  },
+  "adminDapur": {
+    "emailAddress": "adminDapurTesting@gmail.com",
+    "password": "testingqa1"
+  }
+}
