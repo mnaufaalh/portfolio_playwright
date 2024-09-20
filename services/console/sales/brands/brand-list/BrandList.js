@@ -1,26 +1,31 @@
-exports.Banner = class Banner {
+exports.BrandList = class BrandList {
   constructor(page) {
     this.page = page;
     this.lumenURL = process.env.LUMEN_URL;
   }
-  async isBanner(request, accessTokenAdmin) {
+
+  async brandList(request, accessTokenAdmin, categoryId) {
     try {
-      const response = await request.get(`${this.lumenURL}/popup_banners`, {
+      if (categoryId === 4) {
+        categoryId = 5;
+      }
+      const response = await request.get(`${this.lumenURL}/admins/brands?`, {
         headers: {
           Authorization: `Bearer ${accessTokenAdmin}`
         },
-        data: {
-          keyword: 'home'
+        params: {
+          category_id: categoryId
         }
       });
 
       if (!response.ok) {
         throw new Error(`HTTP error! Status: ${response.status}`);
       }
+
       const body = await response.json();
       return body.data;
     } catch (error) {
-      console.error('Error fetching banner:', error);
+      console.error('Error brand detail:', error);
       return null;
     }
   }

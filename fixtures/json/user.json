@@ -30,5 +30,13 @@
   "adminDapur": {
     "emailAddress": "adminDapurTesting@gmail.com",
     "password": "testingqa1"
+  },
+  "adminConsoleApiRevamp" : {
+    "email": "superadmin@kickavenue.com",
+    "password": "loremipsum"
+  },
+  "userApiRevamp": {
+    "email": "erikoanggara@gmail.com",
+    "password": "string"
   }
 }

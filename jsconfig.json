@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+      "baseUrl": ".",
+      "paths": {
+        "@fixtures/*": ["fixtures/*"],
+        "@pages/*": ["pages/*"],
+        "@services/*": ["services/*"],
+        "@utils/*": ["utils/*"]
+      }
+    }
+  }

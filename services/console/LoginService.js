@@ -1,4 +1,4 @@
-exports.Login = class Login {
+exports.LoginService = class LoginService {
   constructor(page) {
     this.page = page;
     this.lumenURL = process.env.LUMEN_URL;
@@ -12,12 +12,14 @@ exports.Login = class Login {
           password: password
         }
       });
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
       const body = await response.json();
       return body.data.token;
     } catch (error) {
       console.error('Error login:', error);
       return null;
-      ;
     }
-  };
+  }
 };
