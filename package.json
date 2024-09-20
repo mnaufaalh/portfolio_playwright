@@ -20,6 +20,12 @@
     "@types/node": "^22.3.0"
   },
   "dependencies": {
-    "dotenv": "^16.4.5"
+    "@faker-js/faker": "^8.4.1",
+    "dayjs": "^1.11.12",
+    "dotenv": "^16.4.5",
+    "module-alias": "^2.2.3"
+  },
+  "_moduleAliases": {
+    "@faker": "node_modules/@faker-js/faker"
   }
 }
