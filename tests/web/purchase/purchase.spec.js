@@ -106,28 +106,28 @@ test.describe('Purchase', () => {
 
   let offerPrice;
 
-  let homepage;
-  let user;
-  let productVariantService;
-  let settingListService;
-  let stockService;
-  let productAddOnListService;
-  let voucherListService;
-  let categoriesListService;
-  let createDisbursementService;
-  let sellingDashboardService;
-  let allSalesService;
-  let outstandingSalesService;
-  let qualityControlSalesService;
-  let legitCheckSalesService;
-  let preDeliveringService;
-  let deliveringService;
-  let midtransSnap;
-  let midtransWeb;
-  let profile;
-  let buyingDashboard;
-  let localStorage;
-  let dateTime;
+  // let homepage;
+  // let user;
+  // let productVariantService;
+  // let settingListService;
+  // let stockService;
+  // let productAddOnListService;
+  // let voucherListService;
+  // let categoriesListService;
+  // let createDisbursementService;
+  // let sellingDashboardService;
+  // let allSalesService;
+  // let outstandingSalesService;
+  // let qualityControlSalesService;
+  // let legitCheckSalesService;
+  // let preDeliveringService;
+  // let deliveringService;
+  // let midtransSnap;
+  // let midtransWeb;
+  // let profile;
+  // let buyingDashboard;
+  // let localStorage;
+  // let dateTime;
 
   const stagingURL = process.env.STAGING_URL;
   const midtransSimulatorUrl = process.env.MIDTRANS_SIMULATOR_URL;
@@ -149,6 +149,15 @@ test.describe('Purchase', () => {
   ]);
 
   const openWebsiteUntilProductDetail = async (page, request, params) => {
+    const voucherListService = new VoucherList();
+    const midtransSnap = new MidtransSnap(page);
+    const homepage = new HomePage(page, request);
+    const profile = new Profile(page);
+    const user = new User(page);
+    const createDisbursementService = new CreateDisbursements();
+    const buyingDashboard = new BuyingDashboard(page);
+    const localStorage = new LocalStorage(page);
+
     const {
       productCondition = 'Brand New',
       sizeUS,
@@ -174,6 +183,9 @@ test.describe('Purchase', () => {
     const processingFeeAmount = (basePrice * processingFee) / 100;
 
     const useVoucher = async (request, typeOfVoucher, askingPrice) => {
+      const categoriesListService = new CategoriesList();
+      const dateTime = new DateTime();
+
       let body;
       let isActive;
       let isLimit;
@@ -256,9 +268,7 @@ test.describe('Purchase', () => {
           return `${hours}:${minutes}:00`;
         };
         const firstDate = await parseTime(dailyStartTime);
-        const secondTime = await parseTime(
-          await dateTime.getCurrentTimeStamp()
-        );
+        const secondTime = await parseTime(dateTime.getCurrentTimeStamp());
         let newDate;
         let tempDate;
         if (firstDate > secondTime) {
@@ -376,7 +386,7 @@ test.describe('Purchase', () => {
 
       if (newDateToday < newDateStartedAt) {
         isInRangeOfDate = true;
-        newDateStartedAt = await dateTime.formatDate(
+        newDateStartedAt = dateTime.formatDate(
           newDateToday.setDate(newDateToday.getDate() - 1)
         );
         body.started_at = newDateStartedAt;
@@ -386,7 +396,7 @@ test.describe('Purchase', () => {
 
       if (newDateToday > newDateEndedAt) {
         isInRangeOfDate = true;
-        newDateEndedAt = await dateTime.formatDate(
+        newDateEndedAt = dateTime.formatDate(
           newDateToday.setDate(newDateToday.getDate() + 1)
         );
         body.ended_at = newDateEndedAt;
@@ -448,7 +458,9 @@ test.describe('Purchase', () => {
     };
 
     const paymentViaVA = async (page, isOffer) => {
+      const midtransWeb = new MidtransWeb(page);
       let billerCode;
+
       await midtransSnap.bankLogoOnVirtualAccountButton(bankVA);
       const response = await page.waitForResponse(
         (response) =>
@@ -633,6 +645,7 @@ test.describe('Purchase', () => {
     await homepage.productCondition(productCondition);
 
     if (isAddOnProduct) {
+      const productAddOnListService = new ProductAddonsList();
       const responseProductAddons =
         await productAddOnListService.selectedProductAddon(
           request,
@@ -840,6 +853,8 @@ test.describe('Purchase', () => {
     }
 
     if (paymentMethod.isOffer) {
+      const sellingDashboardService = new SellingDashboard();
+
       await buyingDashboard.getTable.waitFor({ state: 'visible' });
       await buyingDashboard.getSearchBarOffer.fill(
         selectedProduct.display_name
@@ -890,6 +905,8 @@ test.describe('Purchase', () => {
   };
 
   const refreshProfile = async (page, invoiceNumber) => {
+    const buyingDashboard = new BuyingDashboard(page);
+
     await page.waitForResponse((response) => {
       return (
         response.url().includes('/users/payments') && response.status() === 200
@@ -919,22 +936,8 @@ test.describe('Purchase', () => {
 
   test.beforeAll(async ({ playwright }) => {
     const loginService = new LoginService();
-    settingListService = new SettingList();
-    productVariantService = new ProductVariant();
-    stockService = new Stock();
-    productAddOnListService = new ProductAddonsList();
-    voucherListService = new VoucherList();
-    categoriesListService = new CategoriesList();
-    createDisbursementService = new CreateDisbursements();
-    sellingDashboardService = new SellingDashboard();
-    allSalesService = new AllSales();
-    outstandingSalesService = new OutstandingSales();
-    qualityControlSalesService = new QualityControl();
-    legitCheckSalesService = new LegitCheck();
-    preDeliveringService = new PreDelivering();
-    deliveringService = new Delivering();
-    dateTime = new DateTime();
-
+    const settingListService = new SettingList();
+    const productVariantService = new ProductVariant();
     const requestContext = await playwright.request.newContext();
 
     async function getAccessToken(user) {
@@ -986,13 +989,9 @@ test.describe('Purchase', () => {
   });
 
   test.beforeEach(async ({ page, request }) => {
-    homepage = new HomePage(page, request);
-    user = new User(page);
-    localStorage = new LocalStorage(page);
-    midtransSnap = new MidtransSnap(page);
-    midtransWeb = new MidtransWeb(page);
-    profile = new Profile(page);
-    buyingDashboard = new BuyingDashboard(page);
+    const user = new User(page);
+    const productVariantService = new ProductVariant();
+    const settingListService = new SettingList();
 
     const responseAddSize = await productVariantService.addSizeOnProduct(
       request,
@@ -1034,6 +1033,17 @@ test.describe('Purchase', () => {
   });
 
   test.afterEach(async ({ page, request }) => {
+    const allSalesService = new AllSales();
+    const buyingDashboard = new BuyingDashboard(page);
+    const sellingDashboardService = new SellingDashboard();
+    const outstandingSalesService = new OutstandingSales();
+    const qualityControlSalesService = new QualityControl();
+    const legitCheckSalesService = new LegitCheck();
+    const preDeliveringService = new PreDelivering();
+    const deliveringService = new Delivering();
+    const settingListService = new SettingList();
+    const dateTime = new DateTime();
+
     await refreshProfile(page, invoiceNumber);
     saleDetail = await allSalesService.searchSale(
       request,
@@ -1123,10 +1133,10 @@ test.describe('Purchase', () => {
     const startedAtKickPointPromo = kickPointPromo.start_time;
     const endedAtKickPointPromo = kickPointPromo.end_time;
     const percentageKickPointPromo = kickPointPromo.percentage / 100;
-    let kickPointPercentage = (await dateTime.isDateInRange(
+    let kickPointPercentage = dateTime.isDateInRange(
       startedAtKickPointPromo,
       endedAtKickPointPromo
-    ))
+    )
       ? percentageKickPointPromo
       : 0.003;
 
@@ -1161,6 +1171,7 @@ test.describe('Purchase', () => {
     page,
     request
   }) => {
+    const stockService = new Stock();
     accessTokenBuyer = accessTokenBuyerKickCredit;
     emailBuyer = automationUserBuyerKickCredit.emailAddress;
     params = {
@@ -1185,6 +1196,7 @@ test.describe('Purchase', () => {
     page,
     request
   }) => {
+    const stockService = new Stock();
     accessTokenBuyer = accessTokenBuyerKickPoint;
     emailBuyer = automationUserBuyerKickPoint.emailAddress;
     params = {
@@ -1210,6 +1222,7 @@ test.describe('Purchase', () => {
     page,
     request
   }) => {
+    const stockService = new Stock();
     accessTokenBuyer = accessTokenBuyerSellerCredit;
     emailBuyer = automationUserBuyerSellerCredit.emailAddress;
     params = {
@@ -1234,6 +1247,7 @@ test.describe('Purchase', () => {
     page,
     request
   }) => {
+    const stockService = new Stock();
     accessTokenBuyer = accessTokenBuyerMidtrans;
     emailBuyer = automationUserBuyerMidtrans.emailAddress;
     params = {
@@ -1258,6 +1272,7 @@ test.describe('Purchase', () => {
     page,
     request
   }) => {
+    const stockService = new Stock();
     accessTokenBuyer = accessTokenBuyerMidtrans;
     emailBuyer = automationUserBuyerMidtrans.emailAddress;
     params = {
@@ -1282,6 +1297,7 @@ test.describe('Purchase', () => {
     page,
     request
   }) => {
+    const stockService = new Stock();
     accessTokenBuyer = accessTokenBuyerSellerCredit;
     emailBuyer = automationUserBuyerSellerCredit.emailAddress;
     params = {
@@ -1303,6 +1319,7 @@ test.describe('Purchase', () => {
     page,
     request
   }) => {
+    const stockService = new Stock();
     accessTokenBuyer = accessTokenBuyerSellerCredit;
     emailBuyer = automationUserBuyerSellerCredit.emailAddress;
     params = {
@@ -1324,6 +1341,7 @@ test.describe('Purchase', () => {
     page,
     request
   }) => {
+    const stockService = new Stock();
     accessTokenBuyer = accessTokenBuyerSellerCredit;
     emailBuyer = automationUserBuyerSellerCredit.emailAddress;
     params = {
@@ -1345,6 +1363,7 @@ test.describe('Purchase', () => {
     page,
     request
   }) => {
+    const stockService = new Stock();
     accessTokenBuyer = accessTokenBuyerMidtrans;
     emailBuyer = automationUserBuyerMidtrans.emailAddress;
     params = {
@@ -1369,6 +1388,7 @@ test.describe('Purchase', () => {
     page,
     request
   }) => {
+    const stockService = new Stock();
     accessTokenBuyer = accessTokenBuyerMidtrans;
     emailBuyer = automationUserBuyerMidtrans.emailAddress;
     params = {
@@ -1393,6 +1413,7 @@ test.describe('Purchase', () => {
     page,
     request
   }) => {
+    const stockService = new Stock();
     accessTokenBuyer = accessTokenBuyerKickCredit;
     emailBuyer = automationUserBuyerKickCredit.emailAddress;
     params = {
@@ -1417,6 +1438,7 @@ test.describe('Purchase', () => {
     page,
     request
   }) => {
+    const stockService = new Stock();
     accessTokenBuyer = accessTokenBuyerKickPoint;
     emailBuyer = automationUserBuyerKickPoint.emailAddress;
     params = {
@@ -1442,6 +1464,7 @@ test.describe('Purchase', () => {
     page,
     request
   }) => {
+    const stockService = new Stock();
     accessTokenBuyer = accessTokenBuyerSellerCredit;
     emailBuyer = automationUserBuyerSellerCredit.emailAddress;
     params = {
@@ -1466,6 +1489,7 @@ test.describe('Purchase', () => {
     page,
     request
   }) => {
+    const stockService = new Stock();
     accessTokenBuyer = accessTokenBuyerSellerCredit;
     emailBuyer = automationUserBuyerSellerCredit.emailAddress;
     params = {
@@ -1484,6 +1508,7 @@ test.describe('Purchase', () => {
   });
 
   test('Should be to buy standard product', async ({ page, request }) => {
+    const stockService = new Stock();
     accessTokenBuyer = accessTokenBuyerSellerCredit;
     emailBuyer = automationUserBuyerSellerCredit.emailAddress;
     params = { sizeUS };
@@ -1499,6 +1524,7 @@ test.describe('Purchase', () => {
   });
 
   test('Should be to buy pre order product', async ({ page, request }) => {
+    const stockService = new Stock();
     accessTokenBuyer = accessTokenBuyerSellerCredit;
     emailBuyer = automationUserBuyerSellerCredit.emailAddress;
     params = {
@@ -1517,6 +1543,7 @@ test.describe('Purchase', () => {
   });
 
   test('Should be to buy used product', async ({ page, request }) => {
+    const stockService = new Stock();
     accessTokenBuyer = accessTokenBuyerSellerCredit;
     emailBuyer = automationUserBuyerSellerCredit.emailAddress;
     params = {
@@ -1536,6 +1563,7 @@ test.describe('Purchase', () => {
   });
 
   test('Should be to buy express product', async ({ page, request }) => {
+    const stockService = new Stock();
     accessTokenBuyer = accessTokenBuyerSellerCredit;
     emailBuyer = automationUserBuyerSellerCredit.emailAddress;
     isExpress = true;

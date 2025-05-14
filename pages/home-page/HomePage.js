@@ -1,4 +1,4 @@
-const { Banner } = require('@services/console/creative/banner/Banner');
+const { Banner } = require('@services/console/creative/banner/banner');
 
 exports.HomePage = class HomePage {
   constructor(page, request) {

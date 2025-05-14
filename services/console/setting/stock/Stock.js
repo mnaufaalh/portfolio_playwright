@@ -39,6 +39,7 @@ exports.Stock = class Stock {
       accessTokenAdmin,
       accessTokenQC,
       accessTokenLC,
+      category,
       shippingMethod = 'Standard', // Standard, Express, Pre Order
       isBrandNew = true,
       isDefect = false,
@@ -95,10 +96,25 @@ exports.Stock = class Stock {
       }
     };
 
-    if (isBrandNew === true) {
-      body.sneakers_condition = 'BARU';
+    if (category !== 'handbags') {
+      if (isBrandNew === true) {
+        body.sneakers_condition = 'BARU';
+      } else {
+        body.sneakers_condition = 'BEKAS';
+      }
     } else {
-      body.sneakers_condition = 'BEKAS';
+      if (isBrandNew === true) {
+        body.sneakers_condition = 'BARU';
+      } else {
+        const conditionsApparel = faker.helpers.arrayElement([
+          'WELL_USED',
+          'PRISTINE',
+          'GOOD',
+          'LIKE_NEW',
+          'VINTAGE'
+        ]);
+        body.sneakers_condition = conditionsApparel;
+      }
     }
 
     if (isDefect === false) {

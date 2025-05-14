@@ -176,6 +176,28 @@ exports.ProductVariant = class ProductVariant {
       let sex;
       let number = 0;
 
+      const responseProductVariantDetail = await this.productVariantDetail(
+        request,
+        accessTokenAdmin,
+        selectedProduct
+      );
+
+      console.log(
+        responseProductVariantDetail,
+        `responseProductVariantDetail..`
+      );
+
+      if (responseProductVariantDetail.sizes.length !== 0) {
+        const sizeIds = responseProductVariantDetail.sizes.map(
+          (size) => size.id
+        );
+        await this.detachSizesInProductVariant(
+          request,
+          accessTokenAdmin,
+          selectedProduct,
+          sizeIds
+        );
+      }
       const responseProductDetail = await this.productList.productDetail(
         request,
         accessTokenAdmin,
@@ -306,6 +328,63 @@ exports.ProductVariant = class ProductVariant {
       return body.data;
     } catch (error) {
       console.error('Error set product variant to be active:', error);
+      return null;
+    }
+  }
+
+  async productVariantDetail(request, accessTokenAdmin, selectedProduct) {
+    try {
+      const id = selectedProduct.id;
+      const response = await request.get(
+        `${this.lumenURL}/admins/productvariants/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessTokenAdmin}`
+          }
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const body = await response.json();
+      return body.data;
+    } catch (error) {
+      console.error('Error get product variant detail:', error);
+      return null;
+    }
+  }
+
+  async detachSizesInProductVariant(
+    request,
+    accessTokenAdmin,
+    selectedProduct,
+    sizes
+  ) {
+    try {
+      const id = selectedProduct.id;
+      const response = await request.put(
+        `${this.lumenURL}/admins/productvariants/sizes/${id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${accessTokenAdmin}`
+          },
+          data: {
+            size_id: sizes
+          }
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+
+      const body = await response.json();
+      console.log(body, `body........`);
+      return body.data;
+    } catch (error) {
+      console.error('Error detach size in product variant:', error);
       return null;
     }
   }

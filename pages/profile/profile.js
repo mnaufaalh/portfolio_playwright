@@ -4,5 +4,8 @@ exports.Profile = class Profile {
     this.getBuyingDashboardButton = page
       .locator('.menu-item')
       .filter({ hasText: /^Buying Dashboard$/ });
+    this.getSellingDashboardButton = page
+      .locator('.menu-item')
+      .filter({ hasText: /^Selling Dashboard$/ });
   }
 };

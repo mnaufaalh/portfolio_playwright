@@ -9,15 +9,11 @@ const { LoginService } = require('@services/console/LoginService.js');
 const { User } = require('@services/console/sales/users/user-list/User');
 
 test.describe('Login', () => {
-  let homepage;
-  let loginpage;
-  let loginService;
-  let user;
   let accessTokenAdmin;
   const stagingURL = process.env.STAGING_URL;
 
   test.beforeAll(async ({ playwright }) => {
-    loginService = new LoginService();
+    const loginService = new LoginService();
     const requestContext = await playwright.request.newContext();
     accessTokenAdmin = await loginService.userLogin(
       requestContext,
@@ -27,9 +23,8 @@ test.describe('Login', () => {
   });
 
   test.beforeEach(async ({ page, request }) => {
-    homepage = new HomePage(page, request);
-    loginpage = new LoginPage(page);
-    user = new User(page);
+    const homepage = new HomePage(page, request);
+    const loginpage = new LoginPage(page);
     await page.goto(stagingURL);
     await homepage.isBanner(request, accessTokenAdmin);
     await homepage.loginButton.click();
@@ -39,8 +34,12 @@ test.describe('Login', () => {
   });
 
   test('Should be to reset the password if failed to login in 5 times in a row', async ({
-    request
+    request,
+    page
   }) => {
+    const loginpage = new LoginPage(page);
+    const loginService = new LoginService();
+    const user = new User(page);
     await loginpage.passwordField.fill('salah password');
     const attemptFailedLogin = 5;
     for (let i = 0; i < attemptFailedLogin; i++) {
@@ -73,13 +72,19 @@ test.describe('Login', () => {
     );
   });
 
-  test('Should unable to login with invalid credential', async () => {
+  test('Should unable to login with invalid credential', async ({ page }) => {
+    const loginpage = new LoginPage(page);
     await loginpage.passwordField.fill('salah password');
     await loginpage.loginButton.click();
     await expect(loginpage.modalFailedLogin).toBeVisible();
   });
 
-  test('Should able to login with valid credential', async () => {
+  test('Should able to login with valid credential', async ({
+    page,
+    request
+  }) => {
+    const loginpage = new LoginPage(page);
+    const homepage = new HomePage(page, request);
     await loginpage.passwordField.fill(automationUserBuyerKickCredit.password);
     await loginpage.loginButton.click();
     await expect(homepage.userNameInHomepage).toBeVisible();
